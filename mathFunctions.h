@@ -10,42 +10,28 @@ constexpr int INT_MIN_VALUE = INT_MIN;
 
 inline int sum(const int a, const int b, int &res)
 {
-    if ((b > 0 && a > INT_MAX_VALUE - b) ||
-        (b < 0 && a < INT_MIN_VALUE - b)) {
+    if(__builtin_add_overflow(a, b, &res))
+    {
         return -2;
     }
-    res = a + b;
     return 0;
-
 }
 
 inline int subtract(const int a, const int b, int &res)
 {
-    if ((b < 0 && a > INT_MAX_VALUE + b) ||
-        (b > 0 && a < INT_MIN_VALUE + b)) {
+    if (__builtin_sub_overflow(a, b, &res)) {
         return -2; 
     }
-    res = a - b;
     return 0;
-
 }
 
 inline int multiply(const int a, const int b, int &res)
 {
 
-    if ((a == INT_MIN_VALUE && b == -1) || (a == -1 && b == INT_MIN_VALUE)) {
+    if (__builtin_mul_overflow(a, b, &res)) {
         return -2;
     }
-    if (a > 0) {
-        if (b > 0 && a > INT_MAX_VALUE / b) return -2;
-        if (b < 0 && b < INT_MIN_VALUE / a) return -2;
-    } else if (a < 0) {
-        if (b > 0 && a < INT_MIN_VALUE / b) return -2;
-        if (b < 0 && b < INT_MAX_VALUE / a) return -2;
-    }
-    res = a * b;
     return 0;
-
 }
 
 
@@ -53,11 +39,10 @@ inline int divide(const int a, const int b, int &res)
 {
     if (b == 0) return -1; 
     
-    if (a == INT_MIN_VALUE && b == -1) return -2;
+    if ((a == INT_MIN_VALUE) && (b == -1)) return -2;
     
     res = a / b;
     return 0;
-
 }
 
 inline int pow(const int a, const int b, int &res)
@@ -77,19 +62,11 @@ inline int pow(const int a, const int b, int &res)
 
     res = 1;
     for (int i = 0; i < b; i++) {
-        if (a > 0) {
-            if (res > INT_MAX / a) {
-                return -2;
-            }
-        } else { 
-            if (res > 0 && a < INT_MIN / res) {
-                return -2;
-            }
-            if (res < 0 && a > INT_MAX / res) {
-                return -2;
-            }
+        int temp;
+        if (__builtin_mul_overflow(res, a, &temp)) {
+            return -2;
         }
-        res = res * a;
+        res = temp;
     }
     return 0;
 }
