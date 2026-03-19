@@ -49,13 +49,17 @@ inline int pow(const int a, const int b, int &res)
 {
     if (b < 0) return -1;
 
-    if (b == 0 || a == 1) {
+
+    if(((b == 0) && (a != 0)) || (a == 1)){
         res = 1;
         return 0;
     }
 
     if (a == 0) {
-        if (b == 0) return -3;
+        if (b == 0)
+        {
+            return -3;
+        } 
         res = 0;
         return 0;
     }
@@ -70,7 +74,6 @@ inline int pow(const int a, const int b, int &res)
     }
     return 0;
 }
-
 inline int factorial(const int a, int &res)
 {
     if (a < 0) return -1;
